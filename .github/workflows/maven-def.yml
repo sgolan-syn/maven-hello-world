@@ -58,7 +58,9 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: my-artifact
-        path: my-app/target/*.jar
+        path: |
+          my-app/target/*.jar
+          !my-app/target/original-*.jar
         
     - name: Build Docker image
       run: |
