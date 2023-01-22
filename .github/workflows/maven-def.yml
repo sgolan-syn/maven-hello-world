@@ -44,8 +44,19 @@ jobs:
         git commit -m "skip ci"
         git push
         
-    - name: Build with Maven
+    - name: Build my-app
       run: |
         cd my-app
         mvn -B package --file pom.xml
+        
+    - name: Package my-app
+      run: |
+        cd my-app
+        mvn package
+        
+    - name: Create an artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: output/*.jar
 
