@@ -30,6 +30,6 @@ jobs:
     - name: Build with Maven
       
       run: |
-        cd /my-app
+        cd my-app
         mvn -B package --file pom.xml
 
