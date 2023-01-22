@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Java CI with Maven
+name: my-app ci with maven
 
 on:
   push:
@@ -27,8 +27,13 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
         cache: maven
+    - name: Increase the patch version
+      run: |
+        cd my-app
+        version=$(grep version pom.xml | grep -v -e '<?xml|~'| head -n 1 | sed 's/[[:space:]]//g' | sed -E 's/<.{0,1}version>//g' | awk '{print $1}')
+        new_version=$(echo $version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}')
+        sed -i '0,/<version>.*<\/version>/s//<version>1.0.1<\/version>/' pom.xml
     - name: Build with Maven
-      
       run: |
         cd my-app
         mvn -B package --file pom.xml
