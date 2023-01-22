@@ -63,7 +63,7 @@ jobs:
     - name: Build Docker image
       run: |
         version=$(grep version my-app/pom.xml | grep -v -e '<?xml|~'| head -n 1 | sed 's/[[:space:]]//g' | sed -E 's/<.{0,1}version>//g' | awk '{print $1}')
-        docker build -t my-image:$version -f Dockerfile .
+        docker build -t shayg288/my-image:$version -f Dockerfile .
         echo ::set-output name=image_tag::$version
         
     - name: Tag Docker image
