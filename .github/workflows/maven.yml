@@ -3,7 +3,7 @@ name: Build and Deploy MyApp
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
