@@ -47,12 +47,12 @@ jobs:
     - name: Build my-app
       run: |
         cd my-app
-        mvn -B package --file pom.xml
+        mvn compile
         
     - name: Package my-app
       run: |
         cd my-app
-        mvn package
+        mvn -B package --file pom.xml
         
     - name: Create an artifact
       uses: actions/upload-artifact@v2
