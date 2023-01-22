@@ -1,0 +1,50 @@
+name: Build and Deploy MyApp
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Increase the patch version
+      run: |
+        version=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+        new_version=$(echo $version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}')
+        mvn versions:set -DnewVersion=$new_version
+    - name: Compile the MyApp
+      run: mvn compile
+
+    - name: Package the AyApp
+      run: mvn package
+
+    - name: Create an artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: target/*.jar
+
+   # - name: Build Docker image
+   #   run: |
+   #     version=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+   #     docker build -t my-image:$version -f Dockerfile .
+   #     echo ::set-output name=image_tag::$version
+   # - name: Tag Docker image
+   #   run: |
+   #     version=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+   #     docker tag my-image:$version my-image:latest
+        
+    - name: Login to Docker Hub
+      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+    - name: Push Docker image
+      run: |
+        version= "1"
+        docker push my-image:$version
+        docker push my-image:latest
