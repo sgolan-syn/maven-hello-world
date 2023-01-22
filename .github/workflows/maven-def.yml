@@ -61,6 +61,10 @@ jobs:
         path: |
           my-app/target/*.jar
           !my-app/target/original-*.jar
+    - name: cleanups
+      run: |
+        cd my-app/target
+        rm -rf original*.jar
         
     - name: Build Docker image
       run: |
