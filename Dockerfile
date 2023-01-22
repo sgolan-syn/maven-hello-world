@@ -4,6 +4,6 @@ RUN adduser -D reguser
 
 USER reguser
 
-COPY my-app/target/*.jar /app.jar
+COPY my-app/target/*.jar /
 
 CMD ["java","-jar","/app.jar"]
